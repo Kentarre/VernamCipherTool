@@ -9,19 +9,25 @@ namespace VernamCipherTool
 {
     class Program
     {
-        private static readonly string HelpMEssage = @"
-            VernamCipherTool [type of operation] ""[message]"" [passphrase]
+        #region help message
 
-            Types of operation:
-             encode 
-             decode";
+        private static readonly string HelpMessage = @"
+VernamCipherTool [type of operation] ""[message]"" [passphrase]
+
+Types of operation:
+ encode 
+ decode";
+        #endregion
 
         static void Main(string[] args)
         {
             var r = Enum.TryParse(args[0], true, out Operation op);
 
             if (!r)
-                throw new Exception(HelpMEssage);
+            {
+                Console.WriteLine(HelpMessage);
+                return;
+            }
 
             var message = args[1];
             var passphrase = args[2];
