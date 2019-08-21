@@ -2,43 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VernamCipherTool.Enums;
+using VernamCipherTool.Extensions;
 
 namespace VernamCipherTool
 {
     class Program
     {
-        private static readonly string _encodedString = "Encoded string: ";
-        private static readonly string _decodedString = "Decoded string: ";
+        private static readonly string HelpMEssage = @"
+            VernamCipherTool [type of operation] ""[message]"" [passphrase]
+
+            Types of operation:
+             encode 
+             decode";
 
         static void Main(string[] args)
         {
-            if (args.Length == 0 || !args[0].StartsWith("--"))
-            {
-                ShowHelp();
-                return;
-            }
+            var r = Enum.TryParse(args[0], true, out Operation op);
 
-            Console.Write("Message: ");
-            var message = Console.ReadLine();
+            if (!r)
+                throw new Exception(HelpMEssage);
 
-            Console.Write("Passphrase: ");
-            var passphrase = Console.ReadLine();
+            var message = args[1];
+            var passphrase = args[2];
+            var result = GetResult(op, message, passphrase);
 
-            Enum.TryParse(args[0].Replace("-", ""), out Operation op);
-
-            var resultMessage = op == Operation.Encode ? _encodedString : _decodedString;
-
-            Console.WriteLine($"{resultMessage} {Start(op, message, passphrase)}");
+            Console.WriteLine($"{result.Type} {result.ResultMessage}");
         }
 
         #region operations      
 
-        private static void ShowHelp()
-        {
-            Console.WriteLine("VernamCipher.exe [type of operation]\n\nType of operations:\n --Decode \n --Encode");
-        }
-
-        public static string Start(Operation op, string message, string cipher)
+        public static Result GetResult(Operation op, string message, string cipher)
         {
             var str = message.GetMessageBytes(op);
             var cph = Encoding.Default.GetBytes(cipher);
@@ -46,7 +40,7 @@ namespace VernamCipherTool
             var chunks = GetChunkedString(str, cph);
             var finalStr = GetMergedStr(chunks, cph, op);
 
-            return finalStr;
+            return new Result(finalStr, op);
         }
 
         private static List<List<byte>> GetChunkedString(byte[] str, byte[] cph, List<List<byte>> tmpChunkList = null)
@@ -76,20 +70,5 @@ namespace VernamCipherTool
         }
 
         #endregion
-    }
-    public enum Operation
-    {
-        Encode,
-        Decode
-    }
-
-    public static class StringExtension
-    {
-        public static byte[] GetMessageBytes(this string s, Operation op)
-        {
-            return op == Operation.Encode
-                ? Encoding.Default.GetBytes(s)
-                : Convert.FromBase64String(s);
-        }
     }
 }

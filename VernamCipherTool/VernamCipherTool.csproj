@@ -5,4 +5,15 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+    <Folder Include="Enums\" />
+    <Folder Include="Common\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Extensions\ArrayExtensions.cs" />
+  </ItemGroup>
+  <PropertyGroup>
+  <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+</PropertyGroup>
 </Project>

@@ -263,3 +263,4 @@ core/Sobralaen.Data.Migrations.ArchiveDB/runlog.txt
 dist
 /core/Sobralaen.Data.Migrations.StatisticsDB/runlog.txt
 /core/Sobralaen.Data.Migrations.StatisticsDB/migrated.sql
+.DS_Store
